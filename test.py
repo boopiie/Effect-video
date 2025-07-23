@@ -1,20 +1,21 @@
 import cv2
+import numpy as np
 
-# Liste des caractères ASCII du plus foncé au plus clair
-ascii_chars = "@%#*+=-:. "
+# 1. Image principale vide (grande image)
+output = np.zeros((300, 400, 3), dtype=np.uint8)
 
-def pixel_to_ascii(pixel_value):
-    """Convertit une valeur de pixel (0-255) en caractère ASCII"""
-    index = int(pixel_value / 256 * len(ascii_chars))
-    return ascii_chars[min(index, len(ascii_chars)-1)]
+# 2. Une mini-image à insérer
+tile = cv2.imread("tiles5.jpg")  # par exemple 40x40 px
 
-# Charger l'image en niveaux de gris
-img = cv2.imread("Gotaga_2018.jpg", cv2.IMREAD_GRAYSCALE)
+tile = cv2.resize(tile, (40,40))
 
-# Redimensionner l'image pour la console (optionnel)
-img = cv2.resize(img, (100, 40))  # largeur x hauteur (ajuste selon ta console)
+# 3. Position où la coller (ex: ligne 100, colonne 120)
+y, x = 100, 120
 
-# Convertir chaque pixel en ASCII
-for row in img:
-    line = "".join([pixel_to_ascii(pixel) for pixel in row])
-    print(line)
+# 4. Insérer l’image dans l’image principale
+output[y:y+tile.shape[0], x:x+tile.shape[1]] = tile
+
+# 5. Affichage
+cv2.imshow("Mosaic", output)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
